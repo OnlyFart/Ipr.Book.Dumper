@@ -55,11 +55,7 @@ namespace Ipr.Book.Dumper.Logic {
             Console.WriteLine("Получили шифрованный контент. Расшифровываем.");
             
             for (var i = 0; i < bytes.Length; i += 2048) {
-                for (var j = i; j < i + 100; j += 2) {
-                    if (j >= bytes.Length - 1) {
-                        continue;
-                    }
-                    
+                for (var j = i; j < Math.Min(i + 100, bytes.Length - 1); j += 2) {
                     var temp = bytes[j];
                     bytes[j] = bytes[j + 1];
                     bytes[j + 1] = temp;
