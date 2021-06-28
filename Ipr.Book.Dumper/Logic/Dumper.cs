@@ -30,13 +30,19 @@ namespace Ipr.Book.Dumper.Logic {
         /// <param name="bookId">Идентификатор книги</param>
         /// <returns></returns>
         private async Task<string> GetBookName(long bookId) {
+            var name = $"{bookId}.pdf";
+            
             var doc = await _client.GetHtmlDoc(new Uri($"https://www.iprbookshop.ru/{bookId}.html"));
             if (doc == default) {
-                return default;
+                return name;
             }
 
             var bookInfoBlock = doc.DocumentNode.GetByFilterFirst("div", "book-information");
-            return $"{bookId}. {bookInfoBlock?.GetByFilterFirst("h4", "header-orange")?.InnerText}.pdf";
+            if (!string.IsNullOrWhiteSpace(bookInfoBlock?.GetByFilterFirst("h4", "header-orange")?.InnerText)) {
+                name = $"{bookId}. {bookInfoBlock.GetByFilterFirst("h4", "header-orange")?.InnerText}.pdf";
+            }
+            
+            return name;
         }
 
         /// <summary>
