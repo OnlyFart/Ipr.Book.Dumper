@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Ipr.Book.Dumper.Extensions;
 using Ipr.Book.Dumper.Types;
 
 namespace Ipr.Book.Dumper.Logic {
@@ -13,14 +14,29 @@ namespace Ipr.Book.Dumper.Logic {
             _client = client;
         }
 
-        public async Task<byte[]> Dump(long bookId){
+        public async Task<(string, byte[])> Dump(long bookId){
             var bytes = await _client.GetByteArrayAsync($"https://www.iprbookshop.ru/pdfstream.php?publicationId={bookId}&part=null");
             // Если досутпа к книге нет, то отдается контент вот такой вот длины
             if (bytes.Length == 25462) {
                 throw new Exception($"Книга {bookId} недоступна");
             }
             
-            return Decode(bytes);
+            return (await GetBookName(bookId), Decode(bytes));
+        }
+
+        /// <summary>
+        /// Получение названия книги
+        /// </summary>
+        /// <param name="bookId">Идентификатор книги</param>
+        /// <returns></returns>
+        private async Task<string> GetBookName(long bookId) {
+            var doc = await _client.GetHtmlDoc(new Uri($"https://www.iprbookshop.ru/{bookId}.html"));
+            if (doc == default) {
+                return default;
+            }
+
+            var bookInfoBlock = doc.DocumentNode.GetByFilterFirst("div", "book-information");
+            return $"{bookId}. {bookInfoBlock?.GetByFilterFirst("h4", "header-orange")?.InnerText}.pdf";
         }
 
         /// <summary>
@@ -56,9 +72,7 @@ namespace Ipr.Book.Dumper.Logic {
             
             for (var i = 0; i < bytes.Length; i += 2048) {
                 for (var j = i; j < Math.Min(i + 100, bytes.Length - 1); j += 2) {
-                    var temp = bytes[j];
-                    bytes[j] = bytes[j + 1];
-                    bytes[j + 1] = temp;
+                    (bytes[j], bytes[j + 1]) = (bytes[j + 1], bytes[j]);
                 }
             }
             

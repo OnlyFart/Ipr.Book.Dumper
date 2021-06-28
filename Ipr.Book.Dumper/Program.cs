@@ -27,8 +27,8 @@ namespace Ipr.Book.Dumper {
                         await dumper.Authorize(options.Username, options.Password);
                     }
 
-                    var bytes = await dumper.Dump(options.BookId);
-                    await Saver.Save(options.SavePath, options.Name, bytes);
+                    var (name, content) = await dumper.Dump(options.BookId);
+                    await Saver.Save(options.SavePath, name, content);
                 });
         }
     }
