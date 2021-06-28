@@ -1,9 +1,10 @@
-﻿using CommandLine;
+﻿using System.Collections.Generic;
+using CommandLine;
 
 namespace Ipr.Book.Dumper.Types {
     public class Options {
-        [Option("id", Required = true, HelpText = "Идентификатор книги")]
-        public long BookId { get; set; }
+        [Option("id", Required = true, HelpText = "Идентификаторы книги", Separator = ',')]
+        public IEnumerable<long> BookIds { get; set; }
         
         [Option("save", Required = true, HelpText = "Директория для сохранения книги")]
         public string SavePath { get; set; }

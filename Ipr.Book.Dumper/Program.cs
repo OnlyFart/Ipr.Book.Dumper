@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,8 +28,15 @@ namespace Ipr.Book.Dumper {
                         await dumper.Authorize(options.Username, options.Password);
                     }
 
-                    var (name, content) = await dumper.Dump(options.BookId);
-                    await Saver.Save(options.SavePath, name, content);
+                    foreach (var bookId in options.BookIds) {
+                        try {
+                            var (name, content) = await dumper.Dump(bookId);
+                            await Saver.Save(options.SavePath, name, content);
+                        } catch (Exception ex) {
+                            Console.WriteLine(ex);
+                        }
+                    }
+                    
                 });
         }
     }

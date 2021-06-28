@@ -5,12 +5,12 @@
 
 ## Пример вызова сервиса
 ```
-Ipr.Book.Dumper.exe --save Dump --id 30268 --username <login> --password <password>
+Ipr.Book.Dumper.exe --save Dump --id 101612,105704,101085,102237 --username <login> --password <password>
 ```
 
 ## Где 
 ```
---id - идентификатор книги на сайта https://iprbookshop.ru/
+--id - идентификаторы книг на сайта https://iprbookshop.ru/
 --save - директория для сохранения файла
 --username - имя пользователя от системы
 --password - пароль от системы

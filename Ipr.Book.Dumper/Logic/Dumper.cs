@@ -16,7 +16,7 @@ namespace Ipr.Book.Dumper.Logic {
 
         public async Task<(string, byte[])> Dump(long bookId){
             var bytes = await _client.GetByteArrayAsync($"https://www.iprbookshop.ru/pdfstream.php?publicationId={bookId}&part=null");
-            // Если досутпа к книге нет, то отдается контент вот такой вот длины
+            // Если доступа к книге нет, то отдается контент вот такой вот длины
             if (bytes.Length == 25462) {
                 throw new Exception($"Книга {bookId} недоступна");
             }
