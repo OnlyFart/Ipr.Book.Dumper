@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,17 +11,17 @@ namespace Ipr.Book.Dumper {
         private static async Task Main(string[] args) {
             await Parser.Default.ParseArguments<Options>(args)
                 .WithParsedAsync(async options => {
-                    var handler = new HttpClientHandler {
+                    using var handler = new HttpClientHandler {
                         AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
                     };
-            
+
                     if (options.HasProxy) {
                         var split = options.Proxy.Split(":");
-                        handler.Proxy = new WebProxy(split[0], int.Parse(split[1])); 
+                        handler.Proxy = new WebProxy(split[0], int.Parse(split[1]));
                     }
 
-                    var client = new HttpClient(handler);
-                    
+                    using var client = new HttpClient(handler);
+
                     var dumper = new Logic.Dumper(client);
                     if (options.HasCredentials) {
                         await dumper.Authorize(options.Username, options.Password);
@@ -36,7 +35,6 @@ namespace Ipr.Book.Dumper {
                             Console.WriteLine(ex);
                         }
                     }
-                    
                 });
         }
     }
