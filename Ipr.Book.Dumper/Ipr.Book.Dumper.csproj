@@ -8,6 +8,7 @@
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.8.0" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
+      <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
     </ItemGroup>
 
 </Project>

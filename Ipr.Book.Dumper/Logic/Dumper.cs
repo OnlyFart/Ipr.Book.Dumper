@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using HtmlAgilityPack.CssSelectors.NetCore;
 using Ipr.Book.Dumper.Extensions;
 using Ipr.Book.Dumper.Types;
 
@@ -37,9 +38,9 @@ namespace Ipr.Book.Dumper.Logic {
                 return name;
             }
 
-            var bookInfoBlock = doc.DocumentNode.GetByFilterFirst("div", "book-information");
-            if (!string.IsNullOrWhiteSpace(bookInfoBlock?.GetByFilterFirst("h4", "header-orange")?.InnerText)) {
-                name = $"{bookId}. {bookInfoBlock.GetByFilterFirst("h4", "header-orange")?.InnerText}.pdf";
+            var bookInfoBlock = doc.QuerySelector("div.book-information");
+            if (!string.IsNullOrWhiteSpace(bookInfoBlock?.QuerySelector("h4.header-orange")?.InnerText)) {
+                name = $"{bookId}. {bookInfoBlock.QuerySelector("h4.header-orange")?.InnerText}.pdf";
             }
             
             return name;
